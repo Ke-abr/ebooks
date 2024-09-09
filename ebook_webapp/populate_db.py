@@ -12,10 +12,10 @@ def extract_metadata(epub_path):
     book = epub.read_epub(epub_path)
     title = book.get_metadata('DC', 'title')[0][0] if book.get_metadata('DC', 'title') else 'Unknown Title'
     author = book.get_metadata('DC', 'creator')[0][0] if book.get_metadata('DC', 'creator') else 'Unknown Author'
-    metadata = ""
-    for item in book.get_metadata('DC', '*'):
-        metadata += f"{item[0]}: {item[1]}<br>"
-    return title, author, metadata
+    description = book.get_metadata('DC', 'description')[0][0] if book.get_metadata('DC', 'description') else "No Description"
+    language = book.get_metadata('DC', 'language')[0][0] if book.get_metadata('DC', 'language') else "Unknown Language"
+    genre = book.get_metadata('DC', 'subject')[0][0] if book.get_metadata('DC', 'subject') else "Unknown Genre"
+    return title, author, description, language, genre
 
 def extract_cover(epub_path, book_id):
     book = epub.read_epub(epub_path)
@@ -46,8 +46,8 @@ def populate_database():
                             if epub.endswith(".epub"):
                                 epub_file = os.path.join(book_path, epub)
                                 if os.path.exists(epub_file):
-                                    title, author_name, metadata = extract_metadata(epub_file)
-                                    ebook = Ebook(title=title, author=author_name, epub_path=epub_file)
+                                    title, author_name, description, language, genre = extract_metadata(epub_file)
+                                    ebook = Ebook(title=title, author=author_name, description=description, language=language, genre=genre, epub_path=epub_file)
                                     db.session.add(ebook)
                                     db.session.commit()
                                     cover_path = extract_cover(epub_file, ebook.id)

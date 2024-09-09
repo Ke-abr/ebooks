@@ -14,7 +14,9 @@ class Ebook(db.Model):
     author = db.Column(db.String(200), nullable=False)
     cover_path = db.Column(db.String(300), nullable=True)
     epub_path = db.Column(db.String(300), nullable=False)
-    book_metadata = db.Column(db.Text, nullable=True)
+    description = db.Column(db.Text, nullable=True)
+    language = db.Column(db.String(10), nullable=False)
+    genre = db.Column(db.String(300), nullable=False)
 
     def __repr__(self):
         return f'<Ebook {self.title} by {self.author}>'
