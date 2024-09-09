@@ -1,9 +1,10 @@
 # ebooks
-webapp to list and download ebooks
+WebApp to list and download ebooks
 
 # Prerequisites
-install python3 python3-pip calibre
-pip3 install Flask Flask_SQLAlchemy EbookLib
+Install the following packages:
+- install python3 python3-pip calibre
+- pip3 install Flask Flask_SQLAlchemy EbookLib
 
 
 # How to use
@@ -14,5 +15,6 @@ pip3 install Flask Flask_SQLAlchemy EbookLib
 
 # Note
 The populate_db.py assume the ebook is in epub format and the path is the following:
+
 path/author/title/"title - author.epub"
 The conversion to mobi is done in app.py
