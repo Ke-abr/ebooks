@@ -1,16 +1,19 @@
 {% extends "base.html" %}
+
 {% block content %}
 <h2>Search Results for "{{ query }}"</h2>
 {% if results %}
     <ul>
         {% for ebook in results %}
             <li>
-                <a href="{{ url_for('book_detail', ebook_id=ebook.id) }}">
-                    {% if ebook.cover_path %}
-                        <img src="{{ url_for('static', filename=ebook.cover_path.split('static/')[-1]) }}" alt="Cover" width="50">
-                    {% endif %}
-                    {{ ebook.title }} by {{ ebook.author }}
-                </a>
+                {% if ebook.cover_path %}
+                    <img src="{{ url_for('static', filename=ebook.cover_path.split('static/')[-1]) }}" alt="Cover" width="50">
+                {% endif %}
+                <a href="{{ url_for('book_detail', ebook_id=ebook.id) }}">{{ ebook.title }} by {{ ebook.author }}</a>
+                <div class="actions">
+                    <a href="{{ url_for('download_ebook', ebook_id=ebook.id) }}" class="button">Download EPUB</a>
+                    <a href="{{ url_for('download_mobi', ebook_id=ebook.id) }}" class="button">Download MOBI</a>
+                </div>
             </li>
         {% endfor %}
     </ul>

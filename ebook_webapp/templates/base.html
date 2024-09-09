@@ -4,18 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ebook Collection</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mini.css/3.0.1/mini.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <header>
-        <a href="{{ url_for('index') }}">Ebook Collection</a>
+        <h1>Ebook Collection</h1>
+        <nav>
+        </nav>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
         <form action="{{ url_for('search') }}" method="get">
-            <input type="text" name="q" placeholder="Search by title or author" value="{{ request.args.get('q', '') }}">
+            <input type="text" name="q" placeholder="Search by title or author" required>
             <button type="submit">Search</button>
         </form>
-    </header>
-    <main class="container">
-        {% block content %}{% endblock %}
     </main>
     <footer>
         <p>&copy; 2024 Ebook Collection</p>

@@ -1,16 +1,12 @@
 {% extends "base.html" %}
+
 {% block content %}
-<div>
-    {% if ebook.cover_path %}
-        <img src="{{ url_for('static', filename=ebook.cover_path.split('static/')[-1]) }}" alt="Cover" width="200">
-    {% endif %}
+<div class="ebook-info">
     <h2>{{ ebook.title }}</h2>
     <h3>by {{ ebook.author }}</h3>
-    <div>
-        <h4>Metadata:</h4>
-        <p>{{ ebook.metadata|safe }}</p>
-    </div>
-    <div>
+    <img src="{{ url_for('static', filename=ebook.cover_path.split('static/')[-1]) }}" alt="Cover" class="ebook-cover">
+    <p>{{ ebook.metadata }}</p>
+    <div class="actions">
         <a href="{{ url_for('download_ebook', ebook_id=ebook.id) }}" class="button">Download EPUB</a>
         <a href="{{ url_for('download_mobi', ebook_id=ebook.id) }}" class="button">Download MOBI</a>
     </div>
