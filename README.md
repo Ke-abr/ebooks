@@ -1,4 +1,3 @@
-# ebooks
 WebApp to list and download ebooks
 
 # Prerequisites
