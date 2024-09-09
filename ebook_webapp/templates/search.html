@@ -10,7 +10,7 @@
                 {% if ebook.cover_path %}
                     <img src="{{ url_for('static', filename=ebook.cover_path.split('static/')[-1]) }}" alt="Cover" width="50">
                 {% endif %}
-                <a href="{{ url_for('book_detail', ebook_id=ebook.id) }}">{{ ebook.title }} by {{ ebook.author }}</a>
+                <a href="{{ url_for('book_detail', ebook_id=ebook.id) }}" class="ebook-link">{{ ebook.title }} by {{ ebook.author }} </a>
                 <div class="actions">
                     <a href="{{ url_for('download_ebook', ebook_id=ebook.id) }}" class="button">Download EPUB</a>
                     <a href="{{ url_for('download_mobi', ebook_id=ebook.id) }}" class="button">Download MOBI</a>

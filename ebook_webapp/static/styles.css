@@ -53,7 +53,6 @@ li {
     margin-bottom: 1rem;
     padding: 1rem;
     border-radius: 8px;
-    display: flex;
     align-items: center;
     transition: background 0.3s;
 }
@@ -115,4 +114,21 @@ button:hover {
 
 .button-main-menu:hover {
     background: #218838;
+}
+
+a.ebook-link, a.button{
+    text-decoration: none; 
+}
+
+a:hover, a:focus {
+    color: #1d69e4; 
+}
+
+/* Specific styling for ebook links */
+.ebook-link {
+    font-size: 16px; 
+    font-weight: 600; 
+    margin-bottom: 5px; 
+    display: block; 
+    text-decoration: none;
 }
