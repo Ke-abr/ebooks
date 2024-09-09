@@ -12,5 +12,6 @@
         <a href="{{ url_for('download_ebook', ebook_id=ebook.id) }}" class="button">Download EPUB</a>
         <a href="{{ url_for('download_mobi', ebook_id=ebook.id) }}" class="button">Download MOBI</a>
     </div>
+    <a href="{{ url_for('index') }}" class="button-main-menu">Return to Main Menu</a>
 </div>
 {% endblock %}
