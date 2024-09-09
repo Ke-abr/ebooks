@@ -22,5 +22,48 @@ class Ebook(db.Model):
 with app.app_context():
     db.create_all()
 
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    query = request.args.get('q', '')
+    if query:
+        results = Ebook.query.filter(
+            (Ebook.title.ilike(f'%{query}%')) |
+            (Ebook.author.ilike(f'%{query}%'))
+        ).all()
+    else:
+        results = []
+    return render_template('search.html', results=results, query=query)
+
+@app.route('/book/<int:ebook_id>')
+def book_detail(ebook_id):
+    ebook = Ebook.query.get_or_404(ebook_id)
+    return render_template('book.html', ebook=ebook)
+
+@app.route('/download/<int:ebook_id>')
+def download_ebook(ebook_id):
+    ebook = Ebook.query.get_or_404(ebook_id)
+    return send_file(ebook.epub_path, as_attachment=True, download_name=f"{ebook.title}.epub")
+
+@app.route('/download_mobi/<int:ebook_id>')
+def download_mobi(ebook_id):
+    ebook = Ebook.query.get_or_404(ebook_id)
+    mobi_filename = f"{ebook.title}.mobi"
+    mobi_path = os.path.join('/tmp', mobi_filename)
+
+    try:
+        subprocess.run(['ebook-convert', ebook.epub_path, mobi_path], check=True)
+        return send_file(mobi_path, as_attachment=True, download_name=mobi_filename)
+    except FileNotFoundError:
+        return "Conversion tool not found", 500
+    except subprocess.CalledProcessError:
+        return "Error converting EPUB to MOBI", 500
+    finally:
+        if os.path.exists(mobi_path):
+            os.remove(mobi_path)
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)
