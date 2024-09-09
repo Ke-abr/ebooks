@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, send_file, redirect, url_for
+from flask import Flask, render_template, request, send_file
 from flask_sqlalchemy import SQLAlchemy
 from ebooklib import epub
 import os
