@@ -23,6 +23,7 @@ By order of priority
 - Add safeguard when populating the database (if something fails, should log it and continue to populate)
 - Improve populate_db.py logic
 - Increment database, don't have to populate everything everytime
+- Serve covers without having to copy them in static (takes 2x more space)
 - Find better way to store authors_name, metadatas contains lots of duplicate with different spacing, commas, period etc. find a way to sanitize that
 - Add pagination
 - Add login page
