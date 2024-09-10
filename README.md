@@ -20,8 +20,6 @@ The conversion to mobi is done in app.py
 
 # TODO
 By order of priority
-- Improve def populate_database() in populate_db.py logic
-- Add pagination
 - Add search by first letter for author
 - Add genre search
 - Add regex for search (example: author:X genre:Y title:Z)
