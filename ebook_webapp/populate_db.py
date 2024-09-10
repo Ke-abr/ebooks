@@ -119,7 +119,6 @@ def populate_database():
                             if epub.endswith(".epub"):
                                 epub_file = os.path.join(book_path, epub)
                                 epub_files.append(epub_file)
-                                logging.info(f"Found EPUB: {epub_file}")
         if not epub_files:
             logging.warning("No EPUB file found")
 

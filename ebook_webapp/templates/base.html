@@ -10,16 +10,19 @@
     <header>
         <h1>Ebook Collection</h1>
         <nav>
+            <div class="search-bar">
+                <form action="{{ url_for('search') }}" method="get">
+                    <input type="text" name="q" placeholder="Search by title or author" required>
+                    <button type="submit">Search</button>
+                </form> 
+                <a href="{{ url_for('index') }}" class="button-main-menu">Return to Main Menu</a>
+            </div>
         </nav>
     </header>
     <main>
         <div class="base">
-            <form action="{{ url_for('search') }}" method="get">
-                <input type="text" name="q" placeholder="Search by title or author" required>
-                <button type="submit">Search</button>
-            </form> <a href="{{ url_for('index') }}" class="button-main-menu">Return to Main Menu</a>
+            {% block content %}{% endblock %}
         </div>
-        {% block content %}{% endblock %}
     </main>
 </body>
 </html>
