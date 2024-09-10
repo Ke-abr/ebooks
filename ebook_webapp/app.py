@@ -31,35 +31,49 @@ def index():
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     query = request.args.get('q', '')
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
+
     if query:
         results = Ebook.query.filter(
             (Ebook.title.ilike(f'%{query}%')) |
             (Ebook.author.ilike(f'%{query}%'))
-        ).all()
+        ).paginate(page=page, per_page=per_page, error_out=False)
     else:
-        results = []
+        results = Ebook.query.paginate(page=page, per_page=per_page, error_out=False)
+
     return render_template('search.html', results=results, query=query)
 
 @app.route('/author/<string:author_name>')
 def author_books(author_name):
-    author = Ebook.query.filter((Ebook.author.ilike(f'%{author_name}'))).all()
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
+
+    author = Ebook.query.filter((Ebook.author.ilike(f'%{author_name}'))).paginate(page=page, per_page=per_page, error_out=False)
     return render_template('search.html', results=author, query=author_name)
 
 @app.route('/genre/<string:genre_name>')
 def search_genre(genre_name):
-    genre = Ebook.query.filter((Ebook.genre.ilike(f'%{genre_name}'))).all()
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
+
+    genre = Ebook.query.filter((Ebook.genre.ilike(f'%{genre_name}'))).paginate(page=page, per_page=per_page, error_out=False)
     return render_template('search.html', results=genre, query=genre_name)
 
 @app.route('/authors')
 def authors():
-    authors = db.session.query(Ebook.author).distinct().order_by(Ebook.author.asc()).all()
-    authors = [author[0] for author in authors]
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
+
+    authors = db.session.query(Ebook.author).distinct().order_by(Ebook.author.asc()).paginate(page=page, per_page=per_page, error_out=False)
     return render_template('authors.html', authors=authors)
 
 @app.route('/genres')
 def genres():
-    genres = db.session.query(Ebook.genre).distinct().order_by(Ebook.genre.asc()).all()
-    genres = [genre[0] for genre in genres]
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
+
+    genres = db.session.query(Ebook.genre).distinct().order_by(Ebook.genre.asc()).paginate(page=page, per_page=per_page, error_out=False)
     return render_template('genres.html', genres=genres)
 
 @app.route('/book/<int:ebook_id>')

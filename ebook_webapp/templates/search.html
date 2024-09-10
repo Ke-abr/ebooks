@@ -17,6 +17,19 @@
             </li>
         {% endfor %}
     </ul>
+    <div class="pagination">
+        <a href="{{ url_for('search', q=query, page=results.prev_num) if results.has_prev else '#' }}" class="button">Previous</a>
+        <span>Page {{ results.page }} of {{ results.pages }}</span>
+        <a href="{{ url_for('search', q=query, page=results.next_num) if results.has_next else '#' }}" class="button">Next</a>
+        <form action="{{ url_for('search', q=query) }}" method="get" class="per-page-form">
+            <label for="per_page">Items per page:</label>
+            <select name="per_page" id="per_page" onchange="this.form.submit()">
+                <option value="10" {% if request.args.get('per_page', 10) == 10 %}selected{% endif %}>10</option>
+                <option value="20" {% if request.args.get('per_page', 10) == 20 %}selected{% endif %}>20</option>
+                <option value="50" {% if request.args.get('per_page', 10) == 50 %}selected{% endif %}>50</option>
+            </select>
+        </form>
+    </div>
 {% else %}
     <p>No results found.</p>
 {% endif %}

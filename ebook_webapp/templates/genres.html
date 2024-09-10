@@ -5,8 +5,25 @@
 <ul>
     {% for genre in genres %}
         <li>
-            <a href="{{ url_for('search_genre', genre_name=genre) }}">{{ genre }}</a>
+            <a href="{{ url_for('search_genre', genre_name=genre[0]) }}">{{ genre[0] }}</a>
         </li>
     {% endfor %}
 </ul>
+<div class="pagination">
+    {% if genres.has_prev %}
+        <a href="{{ url_for('genres', page=genres.prev_num, per_page=request.args.get('per_page', 10)) if genres.has_prev else '#' }}" class="button">Previous</a>
+    {% endif %}
+    <span>Page {{ genres.page }} of {{ genres.pages }}</span>
+    {% if genres.has_next %}
+        <a href="{{ url_for('genres', page=genres.next_num, per_page=request.args.get('per_page', 10)) if genres.has_next else '#' }}" class="button">Next</a>
+    {% endif %}
+    <form action="{{ url_for('genres') }}" method="get" class="per-page-form">
+        <label for="per_page">Items per page:</label>
+        <select name="per_page" id="per_page" onchange="this.form.submit()">
+            <option value="10" {% if request.args.get('per_page', 10) == 10 %}selected{% endif %}>10</option>
+            <option value="20" {% if request.args.get('per_page', 10) == 20 %}selected{% endif %}>20</option>
+            <option value="50" {% if request.args.get('per_page', 10) == 50 %}selected{% endif %}>50</option>
+        </select>
+    </form>
+</div>
 {% endblock %}
