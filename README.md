@@ -20,11 +20,17 @@ The conversion to mobi is done in app.py
 
 # TODO
 By order of priority
-- Improve populate_db.py logic
-- Serve covers without having to copy them in static (takes 2x more space)
+- Improve def populate_database() in populate_db.py logic
 - Find better way to store authors_name, metadatas contains lots of duplicate with different spacing, commas, period etc. find a way to sanitize that
 - Add pagination
+- Add search by first letter for author
+- Add genre search
+- Add regex for search (example: author:X genre:Y title:Z)
 - Add login page
 - Add a single or multiple ebook (dont need to run populate everytime)
+- Support pdf files (add a button to convert from pdf to epub/mobi)
+- Button to trigger the populate
+- Button to select a single or multiple books to add
 - Add ways to rate books, add favorites, want to read, already read etc.
+- Serve covers without having to copy them in static (takes 2x more space)
 - Improve css
