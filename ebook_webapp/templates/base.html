@@ -14,13 +14,13 @@
     </header>
     <main>
         {% block content %}{% endblock %}
+    </main>
+    <div class="base">
         <form action="{{ url_for('search') }}" method="get">
             <input type="text" name="q" placeholder="Search by title or author" required>
             <button type="submit">Search</button>
         </form>
-    </main>
-    <footer>
-        <p>&copy; 2024 Ebook Collection</p>
-    </footer>
+        <a href="{{ url_for('index') }}" class="button-main-menu">Return to Main Menu</a>
+    </div>
 </body>
 </html>

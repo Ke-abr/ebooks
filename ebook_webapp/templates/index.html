@@ -2,4 +2,6 @@
 {% block content %}
 <h1>Welcome to Your Ebook Collection</h1>
 <p>Use the search bar to find your ebooks by title or author.</p>
+<h3><a href="{{ url_for('authors') }}">Search by authors</a></h3>
+<h3><a href="{{ url_for('genres') }}">Search by genres</a></h3>
 {% endblock %}

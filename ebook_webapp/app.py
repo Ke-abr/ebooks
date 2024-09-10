@@ -40,6 +40,28 @@ def search():
         results = []
     return render_template('search.html', results=results, query=query)
 
+@app.route('/author/<string:author_name>')
+def author_books(author_name):
+    author = Ebook.query.filter((Ebook.author.ilike(f'%{author_name}'))).all()
+    return render_template('search.html', results=author, query=author_name)
+
+@app.route('/genre/<string:genre_name>')
+def search_genre(genre_name):
+    genre = Ebook.query.filter((Ebook.genre.ilike(f'%{genre_name}'))).all()
+    return render_template('search.html', results=genre, query=genre_name)
+
+@app.route('/authors')
+def authors():
+    authors = db.session.query(Ebook.author).distinct().order_by(Ebook.author.asc()).all()
+    authors = [author[0] for author in authors]
+    return render_template('authors.html', authors=authors)
+
+@app.route('/genres')
+def genres():
+    genres = db.session.query(Ebook.genre).distinct().order_by(Ebook.genre.asc()).all()
+    genres = [genre[0] for genre in genres]
+    return render_template('genres.html', genres=genres)
+
 @app.route('/book/<int:ebook_id>')
 def book_detail(ebook_id):
     ebook = Ebook.query.get_or_404(ebook_id)

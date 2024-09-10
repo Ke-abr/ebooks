@@ -31,14 +31,12 @@ main {
     padding: 2rem;
 }
 
-footer {
-    background: #333;
-    color: #fff;
-    text-align: center;
-    padding: 1rem;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
+.base {
+    margin-left: 2rem;
+}
+
+input {
+    padding: 0.5rem 1rem;
 }
 
 /* Search Results */
@@ -109,6 +107,7 @@ button:hover {
     text-align: center;
     display: inline-block;
     margin-top: 1rem;
+    margin-left: 7rem;
     text-decoration: none;
 }
 

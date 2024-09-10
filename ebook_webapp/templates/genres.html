@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>All Genres</h2>
+<ul>
+    {% for genre in genres %}
+        <li>
+            <a href="{{ url_for('search_genre', genre_name=genre) }}">{{ genre }}</a>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}
