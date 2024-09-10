@@ -1,37 +1,57 @@
 from app import db, Ebook
 from ebooklib import epub
+from ebooklib.epub import EpubException
+from zipfile import BadZipFile
 from app import app
 import os
 
-EBOOK_DIR = '/mnt/h/DL/testCollection'
+EBOOK_DIR = '/mnt/h/DL/ebookCollection/ebookCollection'
 
 COVER_DIR = os.path.join('static', 'covers')
 os.makedirs(COVER_DIR, exist_ok=True)
 
 def extract_metadata(epub_path):
-    book = epub.read_epub(epub_path)
-    title = book.get_metadata('DC', 'title')[0][0] if book.get_metadata('DC', 'title') else 'Unknown Title'
-    author = book.get_metadata('DC', 'creator')[0][0] if book.get_metadata('DC', 'creator') else 'Unknown Author'
-    description = book.get_metadata('DC', 'description')[0][0] if book.get_metadata('DC', 'description') else "No Description"
-    language = book.get_metadata('DC', 'language')[0][0] if book.get_metadata('DC', 'language') else "Unknown Language"
-    genre = book.get_metadata('DC', 'subject')[0][0] if book.get_metadata('DC', 'subject') else "Unknown Genre"
-    return title, author, description, language, genre
+    try:
+        book = epub.read_epub(epub_path)
+        title = book.get_metadata('DC', 'title')[0][0] if book.get_metadata('DC', 'title') else 'Unknown Title'
+        if not title:
+            title = "Unknown Title"
+        author = book.get_metadata('DC', 'creator')[0][0] if book.get_metadata('DC', 'creator') else 'Unknown Author'
+        if not author:
+            author = "Unknown Author"
+        description = book.get_metadata('DC', 'description')[0][0] if book.get_metadata('DC', 'description') else "No Description"
+        if not description:
+            description = "Unknwon Description"
+        language = book.get_metadata('DC', 'language')[0][0] if book.get_metadata('DC', 'language') else "Unknown Language"
+        if not language:
+            language = "Unknwon Language"
+        genre = book.get_metadata('DC', 'subject')[0][0] if book.get_metadata('DC', 'subject') else "Unknown Genre"
+        if not genre:
+            genre = "Unknown Genre"
+        return title, author, description, language, genre
+    except (EpubException, KeyError, AttributeError, BadZipFile, IndexError) as e:
+        print(f"Error reading {epub_path}: {str(e)}")
+        return 'Unknown Title', 'Unknown Author', "No Description", "Unknown Language", "Unknown Genre"
 
 def extract_cover(epub_path, book_id):
-    book = epub.read_epub(epub_path)
-    cover = book.get_item_with_id('cover')
-    if not cover:
-        for item in book.get_items():
-            if 'cover' in item.get_name().lower():
-                cover = item
-                break
-    if cover:
-        cover_filename = f"cover_{book_id}.jpg"
-        cover_path = os.path.join(COVER_DIR, cover_filename)
-        with open(cover_path, 'wb') as f:
-            f.write(cover.get_content())
-        return cover_path
-    return None
+    try:
+        book = epub.read_epub(epub_path)
+        cover = book.get_item_with_id('cover')
+        if not cover:
+            for item in book.get_items():
+                if 'cover' in item.get_name().lower():
+                    cover = item
+                    break
+        if cover:
+            cover_filename = f"cover_{book_id}.jpg"
+            cover_path = os.path.join(COVER_DIR, cover_filename)
+            with open(cover_path, 'wb') as f:
+                f.write(cover.get_content())
+            return cover_path
+        return None
+    except (EpubException, KeyError, AttributeError, BadZipFile, IndexError) as e:
+        print(f"Error getting cover {epub_path}: {str(e)}")
+        return None
 
 # Ugly shit, can probably do better
 def populate_database():
@@ -46,15 +66,19 @@ def populate_database():
                             if epub.endswith(".epub"):
                                 epub_file = os.path.join(book_path, epub)
                                 if os.path.exists(epub_file):
-                                    title, author_name, description, language, genre = extract_metadata(epub_file)
-                                    ebook = Ebook(title=title, author=author_name, description=description, language=language, genre=genre, epub_path=epub_file)
-                                    db.session.add(ebook)
-                                    db.session.commit()
-                                    cover_path = extract_cover(epub_file, ebook.id)
-                                    if cover_path:
-                                        ebook.cover_path = cover_path
+                                    existing_ebook = Ebook.query.filter_by(epub_path=epub_file).first()
+                                    if not existing_ebook:
+                                        title, author_name, description, language, genre = extract_metadata(epub_file)
+                                        ebook = Ebook(title=title, author=author_name, description=description, language=language, genre=genre, epub_path=epub_file)
+                                        db.session.add(ebook)
                                         db.session.commit()
-                                    print(f"Added: {title} by {author_name}")
+                                        cover_path = extract_cover(epub_file, ebook.id)
+                                        if cover_path:
+                                            ebook.cover_path = cover_path
+                                            db.session.commit()
+                                        print(f"Added: {title} by {author_name}")
+                                    else:
+                                        print(f"Skipping: {existing_ebook.title} by {existing_ebook.author} (already exists)")
 
 if __name__ == '__main__':
     populate_database()
