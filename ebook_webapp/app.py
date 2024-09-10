@@ -32,7 +32,7 @@ def index():
 def search():
     query = request.args.get('q', '')
     page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 10, type=int)
+    per_page = request.args.get('per_page', 25, type=int)
 
     if query:
         results = Ebook.query.filter(
@@ -47,7 +47,7 @@ def search():
 @app.route('/author/<string:author_name>')
 def author_books(author_name):
     page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 10, type=int)
+    per_page = request.args.get('per_page', 25, type=int)
 
     author = Ebook.query.filter((Ebook.author.ilike(f'%{author_name}'))).paginate(page=page, per_page=per_page, error_out=False)
     return render_template('search.html', results=author, query=author_name)
@@ -55,7 +55,7 @@ def author_books(author_name):
 @app.route('/genre/<string:genre_name>')
 def search_genre(genre_name):
     page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 10, type=int)
+    per_page = request.args.get('per_page', 25, type=int)
 
     genre = Ebook.query.filter((Ebook.genre.ilike(f'%{genre_name}'))).paginate(page=page, per_page=per_page, error_out=False)
     return render_template('search.html', results=genre, query=genre_name)
@@ -63,7 +63,7 @@ def search_genre(genre_name):
 @app.route('/authors')
 def authors():
     page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 10, type=int)
+    per_page = request.args.get('per_page', 25, type=int)
 
     authors = db.session.query(Ebook.author).distinct().order_by(Ebook.author.asc()).paginate(page=page, per_page=per_page, error_out=False)
     return render_template('authors.html', authors=authors)
@@ -71,7 +71,7 @@ def authors():
 @app.route('/genres')
 def genres():
     page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 10, type=int)
+    per_page = request.args.get('per_page', 25, type=int)
 
     genres = db.session.query(Ebook.genre).distinct().order_by(Ebook.genre.asc()).paginate(page=page, per_page=per_page, error_out=False)
     return render_template('genres.html', genres=genres)

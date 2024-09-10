@@ -154,3 +154,22 @@ a:hover, a:focus {
     display: block; 
     text-decoration: none;
 }
+
+/* Pagination */
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.pagination a {
+    margin: 0 0.5rem;
+    text-decoration: none;
+    color: #007bff;
+    font-size: 1rem;
+}
+
+.pagination a:hover {
+    text-decoration: underline;
+}
