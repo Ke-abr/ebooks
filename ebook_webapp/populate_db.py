@@ -11,12 +11,11 @@ import logging
 
 logging.basicConfig(filename='ebook_import.log', level=logging.DEBUG)
 
-EBOOK_DIR = '/mnt/h/DL/testCollection'
+EBOOK_DIR = '/mnt/h/DL/ebookCollection/ebookCollection'
 COVER_DIR = os.path.join('static', 'covers')
 os.makedirs(COVER_DIR, exist_ok=True)
 
 def extract_metadata(epub_path):
-    logging.info(f"Extracting metada for {epub_path}")
     # Get the author and title from the filename
     base_name = os.path.basename(epub_path).replace('.epub', '')
     match = re.match(r'(.*) - (.*)', base_name)
@@ -26,8 +25,11 @@ def extract_metadata(epub_path):
         book = epub.read_epub(epub_path)
         description = book.get_metadata('DC', 'description')[0][0] if book.get_metadata('DC', 'description') else "No Description"
         language = book.get_metadata('DC', 'language')[0][0] if book.get_metadata('DC', 'language') else "Unknown Language"
+        if not language:
+            language = "Unknown Language"
         genre = book.get_metadata('DC', 'subject')[0][0] if book.get_metadata('DC', 'subject') else "Unknown Genre"
-        logging.info(f"Metada: {title}, {author}, {description}, {language}, {genre}")
+        if not genre:
+            genre = "Unknown Genre"
         return title, author, description, language, genre
     except (EpubException, KeyError, AttributeError, BadZipFile, IndexError, TypeError) as e:
         logging.error(f"Error reading {epub_path}: {str(e)}")
@@ -50,13 +52,11 @@ def extract_cover(epub_path, book_id):
         if cover:
             with open(cover_path, 'wb') as f:
                 f.write(cover.get_content())
-            logging.info(f"Cover extracted for {epub_path}")
             return cover_path
 
         external_cover_path = os.path.join(os.path.dirname(epub_path), 'cover.jpg')
         if os.path.exists(external_cover_path):
             shutil.copy(external_cover_path, cover_path)
-            logging.info(f"External cover.jpg copied for {epub_path}")
             return cover_path
 
         logging.info(f"No cover found for {epub_path}, using default cover")
@@ -85,7 +85,6 @@ def process_book(epub_file):
 
     try:
         db.session.commit()
-        logging.info(f"Committed {ebook.title} to the database.")
     except Exception as e:
         logging.error(f"Error committing {ebook.title}: {str(e)}")
         db.session.rollback()
@@ -96,7 +95,6 @@ def process_book(epub_file):
 
     try:
         db.session.commit()
-        logging.info(f"Added: {title} by {author_name}")
     except Exception as e:
         logging.error(f"Error updating cover path for {ebook.title}: {str(e)}")
         db.session.rollback()
@@ -125,7 +123,7 @@ def populate_database():
         if not epub_files:
             logging.warning("No EPUB file found")
 
-        with ThreadPoolExecutor() as executor:
+        with ThreadPoolExecutor(max_workers=10) as executor:
             futures = [executor.submit(process_book_with_context, epub_file) for epub_file in epub_files]
             for future in futures:
                 try:
